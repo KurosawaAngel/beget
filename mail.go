@@ -7,13 +7,21 @@ import (
 type Mailbox struct {
 	Mailbox           string            `json:"mailbox"`
 	Domain            string            `json:"domain"`
-	SpamFilterStatus  int               `json:"spam_filter_status"`
+	SpamFilterStatus  SpamFilterStatus  `json:"spam_filter_status"`
 	ForwardMailStatus ForwardMailStatus `json:"forward_mail_status"`
 }
 
 type ForwardMailbox struct {
 	ForwardMailbox string `json:"forward_mailbox"`
 }
+
+// SpamFilterStatus is the status of spam filter.
+type SpamFilterStatus int
+
+const (
+	SpamFilterStatusDisabled SpamFilterStatus = 0
+	SpamFilterStatusEnabled                   = 1
+)
 
 // ForwardMailStatus is the status of forwarding mail.
 type ForwardMailStatus string
@@ -115,7 +123,7 @@ func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) error 
 // If there is an beget error, it will be of type [*Error].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#changemailboxsettings
-func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox string, spamFilterStatus int, forwardMailStatus ForwardMailStatus) error {
+func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox string, spamFilterStatus SpamFilterStatus, forwardMailStatus ForwardMailStatus) error {
 	var response response[bool]
 	data := map[string]any{
 		"domain":              domain,
