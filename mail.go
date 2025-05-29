@@ -44,7 +44,7 @@ func (c *Client) GetMailboxList(ctx context.Context, domain string) ([]Mailbox, 
 		return nil, err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return nil, response.Answer.Errors[0]
 	}
 
@@ -67,7 +67,7 @@ func (c *Client) ChangeMailboxPassword(ctx context.Context, domain, mailbox, pas
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -90,7 +90,7 @@ func (c *Client) CreateMailbox(ctx context.Context, domain, mailbox, password st
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -111,7 +111,7 @@ func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) error 
 	if err := c.do(ctx, "mail/dropMailbox", data, &response); err != nil {
 		return err
 	}
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -135,7 +135,7 @@ func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox stri
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -158,7 +158,7 @@ func (c *Client) ForwardListAddMailbox(ctx context.Context, domain, mailbox, for
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -181,7 +181,7 @@ func (c *Client) ForwardListDeleteMailbox(ctx context.Context, domain, mailbox, 
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -203,7 +203,7 @@ func (c *Client) ForwardListShow(ctx context.Context, domain, mailbox string) ([
 		return nil, err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return nil, response.Answer.Errors[0]
 	}
 
@@ -225,7 +225,7 @@ func (c *Client) SetDomainMail(ctx context.Context, domain, domainMailbox string
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 
@@ -246,7 +246,7 @@ func (c *Client) ClearDomainMail(ctx context.Context, domain string) error {
 		return err
 	}
 
-	if len(response.Answer.Errors) > 0 {
+	if response.hasErrors() {
 		return response.Answer.Errors[0]
 	}
 

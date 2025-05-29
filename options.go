@@ -14,6 +14,6 @@ func WithHTTPClient(h *http.Client) Option {
 // WithBaseUrl sets the base URL to use for requests.
 func WithBaseUrl(url string) Option {
 	return func(c *Client) {
-		c.baseUrl = url
+		c.baseURL = url
 	}
 }

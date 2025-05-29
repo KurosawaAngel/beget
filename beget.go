@@ -4,6 +4,7 @@ package beget
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -13,21 +14,29 @@ type Client struct {
 	h        *http.Client
 	username string
 	password string
-	baseUrl  string
+	baseURL  string
+	u        *url.URL
 }
 
 const DefaultBaseURL = "https://api.beget.com/api"
 
 // New returns a new Beget API client.
 // You can set options with the provided options.
+//
+// It panics if provided baseURL is invalid.
 func New(username string, password string, options ...Option) *Client {
-	c := &Client{username: username, password: password, baseUrl: DefaultBaseURL}
+	c := &Client{username: username, password: password, baseURL: DefaultBaseURL}
 	for _, o := range options {
 		o(c)
 	}
 	if c.h == nil {
 		c.h = &http.Client{}
 	}
+	u, err := url.Parse(c.baseURL)
+	if err != nil {
+		panic(fmt.Errorf("beget: cannot parse base url: %w", err))
+	}
+	c.u = u
 	return c
 }
 
@@ -51,11 +60,7 @@ func (c *Client) do(ctx context.Context, endpoint string, input any, output any)
 }
 
 func (c *Client) buildUrl(endpoint string, input any) (string, error) {
-	u, err := url.Parse(c.baseUrl)
-	if err != nil {
-		return "", err
-	}
-	u = u.JoinPath(endpoint)
+	u := c.u.JoinPath(endpoint)
 	data, err := json.Marshal(input)
 	if err != nil {
 		return "", err
