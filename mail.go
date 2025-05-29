@@ -34,7 +34,7 @@ const (
 
 // GetMailboxList returns all mailboxes on the given domain.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#getmailboxlist
 func (c *Client) GetMailboxList(ctx context.Context, domain string) ([]Mailbox, error) {
@@ -45,7 +45,7 @@ func (c *Client) GetMailboxList(ctx context.Context, domain string) ([]Mailbox, 
 	}
 
 	if response.hasErrors() {
-		return nil, response.Answer.Errors[0]
+		return nil, response.Answer.Errors
 	}
 
 	return response.Answer.Result, nil
@@ -53,7 +53,7 @@ func (c *Client) GetMailboxList(ctx context.Context, domain string) ([]Mailbox, 
 
 // ChangeMailboxPassword changes password for the given mailbox.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#changemailboxpassword
 func (c *Client) ChangeMailboxPassword(ctx context.Context, domain, mailbox, password string) error {
@@ -68,7 +68,7 @@ func (c *Client) ChangeMailboxPassword(ctx context.Context, domain, mailbox, pas
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -76,7 +76,7 @@ func (c *Client) ChangeMailboxPassword(ctx context.Context, domain, mailbox, pas
 
 // CreateMailbox creates a new mailbox on the given domain.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#createmailbox
 func (c *Client) CreateMailbox(ctx context.Context, domain, mailbox, password string) error {
@@ -91,7 +91,7 @@ func (c *Client) CreateMailbox(ctx context.Context, domain, mailbox, password st
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -99,7 +99,7 @@ func (c *Client) CreateMailbox(ctx context.Context, domain, mailbox, password st
 
 // DropMailbox deletes the specified mailbox.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#dropmailbox
 func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) error {
@@ -112,7 +112,7 @@ func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) error 
 		return err
 	}
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -120,7 +120,7 @@ func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) error 
 
 // ChangeMailboxSettings updates settings for the specified mailbox.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#changemailboxsettings
 func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox string, spamFilterStatus SpamFilterStatus, forwardMailStatus ForwardMailStatus) error {
@@ -136,7 +136,7 @@ func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox stri
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -144,7 +144,7 @@ func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox stri
 
 // ForwardListAddMailbox adds a mailbox to the forwarding list.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#forwardlistaddmailbox
 func (c *Client) ForwardListAddMailbox(ctx context.Context, domain, mailbox, forwardMailbox string) error {
@@ -159,7 +159,7 @@ func (c *Client) ForwardListAddMailbox(ctx context.Context, domain, mailbox, for
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -167,7 +167,7 @@ func (c *Client) ForwardListAddMailbox(ctx context.Context, domain, mailbox, for
 
 // ForwardListDeleteMailbox removes a mailbox from the forwarding list.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#forwardlistdeletemailbox
 func (c *Client) ForwardListDeleteMailbox(ctx context.Context, domain, mailbox, forwardMailbox string) error {
@@ -182,7 +182,7 @@ func (c *Client) ForwardListDeleteMailbox(ctx context.Context, domain, mailbox, 
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -190,21 +190,24 @@ func (c *Client) ForwardListDeleteMailbox(ctx context.Context, domain, mailbox, 
 
 // ForwardListShow returns the forwarding list for the specified mailbox.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#forwardlistshow
 func (c *Client) ForwardListShow(ctx context.Context, domain, mailbox string) ([]ForwardMailbox, error) {
+	const endpoint = "mail/forwardListShow"
+
 	var response response[[]ForwardMailbox]
 	data := map[string]string{
 		"domain":  domain,
 		"mailbox": mailbox,
 	}
-	if err := c.do(ctx, "mail/forwardListShow", data, &response); err != nil {
+
+	if err := c.do(ctx, endpoint, data, &response); err != nil {
 		return nil, err
 	}
 
 	if response.hasErrors() {
-		return nil, response.Answer.Errors[0]
+		return nil, response.Answer.Errors
 	}
 
 	return response.Answer.Result, nil
@@ -212,7 +215,7 @@ func (c *Client) ForwardListShow(ctx context.Context, domain, mailbox string) ([
 
 // SetDomainMail sets up domain mail for the specified domain.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#setdomainmail
 func (c *Client) SetDomainMail(ctx context.Context, domain, domainMailbox string) error {
@@ -226,7 +229,7 @@ func (c *Client) SetDomainMail(ctx context.Context, domain, domainMailbox string
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
@@ -234,7 +237,7 @@ func (c *Client) SetDomainMail(ctx context.Context, domain, domainMailbox string
 
 // ClearDomainMail resets domain mail for the specified domain.
 //
-// If there is an beget error, it will be of type [*Error].
+// If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#cleardomainmail
 func (c *Client) ClearDomainMail(ctx context.Context, domain string) error {
@@ -247,7 +250,7 @@ func (c *Client) ClearDomainMail(ctx context.Context, domain string) error {
 	}
 
 	if response.hasErrors() {
-		return response.Answer.Errors[0]
+		return response.Answer.Errors
 	}
 
 	return nil
