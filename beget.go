@@ -10,6 +10,7 @@ import (
 )
 
 // Client is a Beget API client.
+// It's safe to be used concurrently.
 type Client struct {
 	h        *http.Client
 	username string
@@ -36,7 +37,7 @@ func New(username string, password string, options ...Option) *Client {
 	if err != nil {
 		panic(fmt.Errorf("beget: cannot parse base url: %w", err))
 	}
-	c.u = u
+	c.u = u // I guess it's should be better than parse it every time
 	return c
 }
 
