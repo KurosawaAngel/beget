@@ -14,9 +14,9 @@ func Example() {
 	// use api methods as you need
 	err := c.DropMailbox(ctx, "domain", "mailbox")
 	if err != nil {
-		var e *beget.Error
+		var e beget.Errors
 		if errors.As(err, &e) {
-			// handle beget error
+			// handle beget errors
 		}
 		// handle other errors
 	}
