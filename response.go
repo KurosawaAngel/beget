@@ -6,8 +6,10 @@ import (
 )
 
 type response[T any] struct {
-	Status string    `json:"status"`
-	Answer answer[T] `json:"answer"`
+	Status    string    `json:"status"`
+	ErrorText string    `json:"error_text"`
+	ErrorCode int       `json:"error_code"`
+	Answer    answer[T] `json:"answer"`
 }
 
 func (r response[T]) hasErrors() bool {
@@ -28,23 +30,30 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("%d: %s", e.Code, e.Text)
+	return fmt.Sprintf("code=%d: text=%q", e.Code, e.Text)
 }
 
 type Errors []*Error
 
-func (e Errors) Error() string {
-	switch len(e) {
-	case 0:
-		return "beget: no errors"
-	case 1:
-		return "beget: " + e[0].Error()
-	default:
-		errs := make([]string, len(e)+1)
-		errs[0] = "beget: "
-		for i := range e {
-			errs[i+1] = e[i].Error()
-		}
-		return strings.Join(errs, ", ")
+func (es Errors) Error() string {
+	if len(es) == 1 {
+		return "beget: " + es[0].Error()
 	}
+
+	var b strings.Builder
+	b.WriteString("beget: ")
+	b.WriteString(es[0].Error())
+	for _, err := range es[1:] {
+		b.WriteString(", ")
+		b.WriteString(err.Error())
+	}
+	return b.String()
+}
+
+func (es Errors) Unwrap() []error {
+	errs := make([]error, len(es))
+	for i, err := range es {
+		errs[i] = err
+	}
+	return errs
 }

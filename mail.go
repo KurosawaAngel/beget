@@ -40,7 +40,7 @@ const (
 func (c *Client) GetMailboxList(ctx context.Context, domain string) ([]Mailbox, error) {
 	var response response[[]Mailbox]
 	data := map[string]string{"domain": domain}
-	if err := c.do(ctx, "mail/mailboxes", data, &response); err != nil {
+	if err := c.do(ctx, "mail/getMailboxList", data, &response); err != nil {
 		return nil, err
 	}
 
@@ -194,15 +194,13 @@ func (c *Client) ForwardListDeleteMailbox(ctx context.Context, domain, mailbox, 
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#forwardlistshow
 func (c *Client) ForwardListShow(ctx context.Context, domain, mailbox string) ([]ForwardMailbox, error) {
-	const endpoint = "mail/forwardListShow"
-
 	var response response[[]ForwardMailbox]
 	data := map[string]string{
 		"domain":  domain,
 		"mailbox": mailbox,
 	}
 
-	if err := c.do(ctx, endpoint, data, &response); err != nil {
+	if err := c.do(ctx, "mail/forwardListShow", data, &response); err != nil {
 		return nil, err
 	}
 
