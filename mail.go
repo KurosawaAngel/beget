@@ -19,8 +19,8 @@ type ForwardMailbox struct {
 type SpamFilterStatus int
 
 const (
-	SpamFilterStatusDisabled SpamFilterStatus = 0
-	SpamFilterStatusEnabled                   = 1
+	SpamFilterStatusDisabled SpamFilterStatus = iota
+	SpamFilterStatusEnabled
 )
 
 // ForwardMailStatus is the status of forwarding mail.
@@ -28,8 +28,8 @@ type ForwardMailStatus string
 
 const (
 	ForwardMailStatusNoForward        ForwardMailStatus = "no_forward"
-	ForwardMailStatusForward                            = "forward"
-	ForwardMailStatusForwardAndDelete                   = "forward_and_delete"
+	ForwardMailStatusForward          ForwardMailStatus = "forward"
+	ForwardMailStatusForwardAndDelete ForwardMailStatus = "forward_and_delete"
 )
 
 // GetMailboxList returns all mailboxes on the given domain.
