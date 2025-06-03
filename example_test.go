@@ -3,6 +3,7 @@ package beget_test
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/KurosawaAngel/beget"
 )
@@ -12,7 +13,7 @@ func Example() {
 	// create a new Beget API client.
 	c := beget.New("username", "password")
 	// use api methods as you need
-	err := c.DropMailbox(ctx, "domain", "mailbox")
+	res, err := c.DropMailbox(ctx, "domain", "mailbox")
 	if err != nil {
 		var e beget.Errors
 		if errors.As(err, &e) {
@@ -20,4 +21,6 @@ func Example() {
 		}
 		// handle other errors
 	}
+	fmt.Println(res)
+	// Output: true
 }

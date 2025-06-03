@@ -2,18 +2,24 @@ package beget
 
 import (
 	"fmt"
-	"strings"
+	"unsafe"
 )
 
 type response[T any] struct {
-	Status    string    `json:"status"`
-	ErrorText string    `json:"error_text"`
-	ErrorCode int       `json:"error_code"`
-	Answer    answer[T] `json:"answer"`
+	Status string `json:"status"`
+	Error
+	Answer answer[T] `json:"answer"`
 }
 
-func (r response[T]) hasErrors() bool {
-	return len(r.Answer.Errors) > 0
+func (r response[T]) err() error {
+	switch {
+	case r.Status == "error":
+		return Errors{&r.Error}
+	case r.Answer.Status == "error":
+		return r.Answer.Errors
+	default:
+		return nil
+	}
 }
 
 type answer[T any] struct {
@@ -25,12 +31,12 @@ type answer[T any] struct {
 // Error represents a beget error and
 // implements the error interface.
 type Error struct {
-	Code int    `json:"error_code"`
+	Code any    `json:"error_code"` // Execellent beget API can return int or string.
 	Text string `json:"error_text"`
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("code=%d: text=%q", e.Code, e.Text)
+	return fmt.Sprintf("code=%v: text=%q", e.Code, e.Text)
 }
 
 type Errors []*Error
@@ -40,14 +46,15 @@ func (es Errors) Error() string {
 		return "beget: " + es[0].Error()
 	}
 
-	var b strings.Builder
-	b.WriteString("beget: ")
-	b.WriteString(es[0].Error())
+	// errors.Join realization
+	b := []byte("beget: ")
+	b = append(b, es[0].Error()...)
 	for _, err := range es[1:] {
-		b.WriteString(", ")
-		b.WriteString(err.Error())
+		b = append(b, '\n')
+		b = append(b, err.Error()...)
 	}
-	return b.String()
+
+	return unsafe.String(&b[0], len(b))
 }
 
 func (es Errors) Unwrap() []error {
