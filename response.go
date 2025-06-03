@@ -42,19 +42,22 @@ func (e *Error) Error() string {
 type Errors []*Error
 
 func (es Errors) Error() string {
-	if len(es) == 1 {
+	switch len(es) {
+	case 0:
+		return "beget: no errors"
+	case 1:
 		return "beget: " + es[0].Error()
-	}
+	default:
+		// errors.Join realization
+		b := []byte("beget: ")
+		b = append(b, es[0].Error()...)
+		for _, err := range es[1:] {
+			b = append(b, '\n')
+			b = append(b, err.Error()...)
+		}
 
-	// errors.Join realization
-	b := []byte("beget: ")
-	b = append(b, es[0].Error()...)
-	for _, err := range es[1:] {
-		b = append(b, '\n')
-		b = append(b, err.Error()...)
+		return unsafe.String(&b[0], len(b))
 	}
-
-	return unsafe.String(&b[0], len(b))
 }
 
 func (es Errors) Unwrap() []error {
