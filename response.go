@@ -36,7 +36,7 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("code=%v: text=%q", e.Code, e.Text)
+	return fmt.Sprintf("code=%v text=%q", e.Code, e.Text)
 }
 
 type Errors []*Error
