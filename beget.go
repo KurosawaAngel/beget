@@ -25,7 +25,7 @@ const DefaultBaseURL = "https://api.beget.com/api"
 // You can set options with the provided options.
 //
 // It panics if provided baseURL is invalid.
-func New(login string, password string, options ...Option) *Client {
+func New(login, password string, options ...Option) *Client {
 	c := &Client{username: login, password: password, baseURL: DefaultBaseURL}
 	for _, o := range options {
 		o(c)
@@ -41,7 +41,7 @@ func New(login string, password string, options ...Option) *Client {
 	return c
 }
 
-func (c *Client) do(ctx context.Context, endpoint string, input any, output any) error {
+func (c *Client) do(ctx context.Context, endpoint string, input, output any) error {
 	u, err := c.buildUrl(endpoint, input)
 	fmt.Println(u)
 	if err != nil {
@@ -56,7 +56,9 @@ func (c *Client) do(ctx context.Context, endpoint string, input any, output any)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		_ = resp.Body.Close()
+	}()
 
 	return json.NewDecoder(resp.Body).Decode(output)
 }

@@ -123,7 +123,12 @@ func (c *Client) DropMailbox(ctx context.Context, domain, mailbox string) (bool,
 // If there is an beget error, it will be of type [Errors].
 //
 // Beget API docs: https://beget.com/en/kb/api/functions-for-work-with-mail#changemailboxsettings
-func (c *Client) ChangeMailboxSettings(ctx context.Context, domain, mailbox string, spamFilterStatus SpamFilterStatus, forwardMailStatus ForwardMailStatus) (bool, error) {
+func (c *Client) ChangeMailboxSettings(
+	ctx context.Context,
+	domain, mailbox string,
+	spamFilterStatus SpamFilterStatus,
+	forwardMailStatus ForwardMailStatus,
+) (bool, error) {
 	var response response[bool]
 	data := map[string]any{
 		"domain":              domain,
