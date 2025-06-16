@@ -4,13 +4,8 @@ formatters:
   enable:
     - gofumpt
     - golines
-    - goimports
   settings:
-    goimports:
-      local-prefixes:
-        - github.com/KurosawaAngel/beget
     gofumpt:
-      module-path: github.com/KurosawaAngel/beget
       extra-rules: true
     golines:
       max-len: 120

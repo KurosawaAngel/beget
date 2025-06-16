@@ -6,9 +6,9 @@ import (
 )
 
 type response[T any] struct {
-	Status string `json:"status"`
-	Error
+	Status string    `json:"status"`
 	Answer answer[T] `json:"answer"`
+	Error
 }
 
 func (r response[T]) err() error {
