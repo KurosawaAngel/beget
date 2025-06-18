@@ -2,6 +2,7 @@ package beget
 
 import (
 	"context"
+	"errors"
 )
 
 type Mailbox struct {
@@ -127,8 +128,13 @@ func (c *Client) ChangeMailboxSettings(
 	ctx context.Context,
 	domain, mailbox string,
 	spamFilterStatus SpamFilterStatus,
+	spamFilter int,
 	forwardMailStatus ForwardMailStatus,
 ) (bool, error) {
+	if 0 <= spamFilter && spamFilter <= 100 {
+		return false, errors.New("spamFilter must be between 0 and 100")
+	}
+
 	var response response[bool]
 	data := map[string]any{
 		"domain":              domain,
