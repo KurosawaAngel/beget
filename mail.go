@@ -140,6 +140,7 @@ func (c *Client) ChangeMailboxSettings(
 		"domain":              domain,
 		"mailbox":             mailbox,
 		"spam_filter_status":  spamFilterStatus,
+		"spam_filter":         spamFilter,
 		"forward_mail_status": forwardMailStatus,
 	}
 	if err := c.do(ctx, "mail/changeMailboxSettings", data, &response); err != nil {
