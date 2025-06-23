@@ -131,7 +131,7 @@ func (c *Client) ChangeMailboxSettings(
 	spamFilter int,
 	forwardMailStatus ForwardMailStatus,
 ) (bool, error) {
-	if 0 <= spamFilter && spamFilter <= 100 {
+	if spamFilter < 0 || spamFilter > 100 {
 		return false, errors.New("spamFilter must be between 0 and 100")
 	}
 
