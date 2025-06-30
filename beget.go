@@ -43,7 +43,6 @@ func New(login, password string, options ...Option) *Client {
 
 func (c *Client) do(ctx context.Context, endpoint string, input, output any) error {
 	u, err := c.buildUrl(endpoint, input)
-	fmt.Println(u)
 	if err != nil {
 		return err
 	}
