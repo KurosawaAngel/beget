@@ -1,3 +1,5 @@
+//go:build example
+
 package beget_test
 
 import (
