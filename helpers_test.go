@@ -3,8 +3,9 @@ package beget_test
 import (
 	"net/http"
 
-	"github.com/KurosawaAngel/beget"
 	"github.com/h2non/gock"
+
+	"github.com/KurosawaAngel/beget"
 )
 
 func setupGock(endpoint, input, output string) {

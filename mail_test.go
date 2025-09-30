@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/KurosawaAngel/beget"
+
 	"github.com/h2non/gock"
 	"github.com/stretchr/testify/assert"
 )
